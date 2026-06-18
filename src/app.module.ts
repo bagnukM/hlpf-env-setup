@@ -7,15 +7,19 @@ import { createKeyv } from '@keyv/redis';
 import { Category } from './categories/category.entity';
 import { Product } from './products/product.entity';
 import { User } from './users/user.entity';
+import { Order } from './orders/entities/order.entity';
+import { OrderItem } from './orders/entities/order-item.entity';
 
 import { CategoriesModule } from './categories/categories.module';
 import { ProductsModule } from './products/products.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { OrdersModule } from './orders/orders.module';
 
 import { CreateTables1700000001000 } from './migrations/1700000001000-CreateTables';
 import { AddIsActiveToProducts1781718845122 } from './migrations/1781718845122-AddIsActiveToProducts';
 import { CreateUsers1781794202026 } from './migrations/1781794202026-CreateUsers';
+import { CreateOrders1781802116684 } from './migrations/1781802116684-CreateOrders';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -31,13 +35,14 @@ import { AppService } from './app.service';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
-      entities: [Category, Product, User],
+      entities: [Category, Product, User, Order, OrderItem],
       synchronize: false,
       migrationsRun: true,
       migrations: [
         CreateTables1700000001000,
         AddIsActiveToProducts1781718845122,
         CreateUsers1781794202026,
+        CreateOrders1781802116684,
       ],
     }),
 
@@ -57,6 +62,7 @@ import { AppService } from './app.service';
     ProductsModule,
     UsersModule,
     AuthModule,
+    OrdersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
