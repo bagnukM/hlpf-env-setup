@@ -6,6 +6,7 @@ import {
   Delete,
   Param,
   Body,
+  Query,
   ParseIntPipe,
   UseGuards,
 } from '@nestjs/common';
@@ -18,6 +19,7 @@ import {
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { ProductQueryDto } from './dto/product-query.dto';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { Roles } from '../common/decorators/roles.decorator';
@@ -30,13 +32,14 @@ export class ProductsController {
 
   @Get()
   @ApiOperation({
-    summary: 'Отримати всі продукти',
+    summary: 'Отримати продукти з пагінацією',
     description:
-      'Повертає список усіх продуктів з вкладеними категоріями. Публічний ендпоінт.',
+      'Повертає список продуктів з мета-інформацією. ' +
+      'Підтримує пагінацію, сортування, фільтрацію та пошук.',
   })
-  @ApiResponse({ status: 200, description: 'Список продуктів' })
-  findAll() {
-    return this.productsService.findAll();
+  @ApiResponse({ status: 200, description: 'Список продуктів з meta' })
+  findAll(@Query() query: ProductQueryDto) {
+    return this.productsService.findAll(query);
   }
 
   @Get(':id')
