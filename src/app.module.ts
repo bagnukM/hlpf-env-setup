@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CacheModule } from '@nestjs/cache-manager';
-import { redisStore } from 'cache-manager-redis-yet';
+import { createKeyv } from '@keyv/redis';
 
 import { Category } from './categories/category.entity';
 import { Product } from './products/product.entity';
@@ -43,15 +43,14 @@ import { AppService } from './app.service';
 
     CacheModule.registerAsync({
       isGlobal: true,
-      useFactory: async () => ({
-        store: await redisStore({
-          socket: {
-            host: process.env.REDIS_HOST,
-            port: parseInt(process.env.REDIS_PORT!, 10),
-          },
-        }),
-        ttl: 60 * 1000,
-      }),
+      useFactory: () => {
+        const host = process.env.REDIS_HOST;
+        const port = process.env.REDIS_PORT;
+        return {
+          stores: [createKeyv(`redis://${host}:${port}`)],
+          ttl: 60 * 1000,
+        };
+      },
     }),
 
     CategoriesModule,
